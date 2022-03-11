@@ -1,0 +1,7 @@
+/* .TVChartContainer {
+  height: calc(100vh - 80px);
+} */
+#tv_chart_container iframe {
+  width: 100% !important;
+  height: 640px !important;
+}

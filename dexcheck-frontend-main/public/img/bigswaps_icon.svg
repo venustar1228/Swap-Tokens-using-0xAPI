@@ -1,0 +1,6 @@
+<svg id="vuesax_bold_convert" data-name="vuesax/bold/convert" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">
+  <g id="convert">
+    <path id="Vector" d="M8.75,0a8.7,8.7,0,0,1,4.638,1.33l-6,6.011-.009-2.4a.656.656,0,0,0-1.312,0l.009,3.981a.647.647,0,0,0,.411.6.618.618,0,0,0,.245.052.656.656,0,0,0,.464-.193l7.166-7.175a.927.927,0,0,0,.087-.1A8.75,8.75,0,0,1,4.113,16.17l6-6.011.009,2.4a.656.656,0,0,0,1.313,0l-.009-3.981a.647.647,0,0,0-.411-.6.633.633,0,0,0-.709.14L3.141,15.286a.927.927,0,0,0-.088.105A8.75,8.75,0,0,1,8.75,0Z" transform="translate(1.723 1.777)" fill="#008aff"/>
+    <path id="Vector-2" data-name="Vector" d="M0,21H21V0H0Z" transform="translate(0 0)" fill="none" opacity="0"/>
+  </g>
+</svg>

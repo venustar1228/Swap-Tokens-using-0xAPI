@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="vuesax_bold_3dcube" data-name="vuesax/bold/3dcube" transform="translate(-300 -508)">
+    <g id="_3dcube" data-name="3dcube">
+      <path id="Vector" d="M15.4,3.65,9.13.27a2.216,2.216,0,0,0-2.12,0L.74,3.65a1.477,1.477,0,0,0,0,2.56L7.01,9.59a2.216,2.216,0,0,0,2.12,0L15.4,6.21a1.431,1.431,0,0,0,.74-1.28A1.431,1.431,0,0,0,15.4,3.65Z" transform="translate(303.93 510.03)" fill="#89f4ab"/>
+      <path id="Vector-2" data-name="Vector" d="M7.91,3.071,2.07.151A1.429,1.429,0,0,0,0,1.431v5.51a2.5,2.5,0,0,0,1.38,2.24L7.21,12.1a1.442,1.442,0,0,0,1.39-.06,1.413,1.413,0,0,0,.68-1.22V5.311A2.454,2.454,0,0,0,7.91,3.071Z" transform="translate(302 517.719)" fill="#89f4ab"/>
+      <path id="Vector-3" data-name="Vector" d="M8.6.215A1.409,1.409,0,0,0,7.21.155L1.38,3.075A2.491,2.491,0,0,0,0,5.315v5.51a1.413,1.413,0,0,0,.68,1.22,1.442,1.442,0,0,0,1.39.06L7.9,9.185a2.491,2.491,0,0,0,1.38-2.24V1.435A1.425,1.425,0,0,0,8.6.215Z" transform="translate(312.72 517.715)" fill="#89f4ab"/>
+      <path id="Vector-4" data-name="Vector" d="M0,0H24V24H0Z" transform="translate(324 532) rotate(180)" fill="none" opacity="0"/>
+    </g>
+  </g>
+</svg>
