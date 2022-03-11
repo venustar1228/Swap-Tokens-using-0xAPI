@@ -1792,6 +1792,17 @@ h1,h2,h3,h4,h5,h6,a,p,button {
       padding: 14px 0;
     }
   }
+  .approve_btn_bx{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    button{
+      background: transparent;
+      width: 40%;
+      padding: 14px 0;
+    }
+  }
 }
 @media screen and (max-width: 800px) {
   .dx_swp_main_bx{
