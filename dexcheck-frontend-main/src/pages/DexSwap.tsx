@@ -51,11 +51,24 @@ export default function DexSwap() {
     }
 
     const connectWalletHandler = async (event: MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
         let accounts = await web3.eth.requestAccounts();
         alert(accounts);
     }
 
+    const approveHandler = async (event: MouseEvent<HTMLButtonElement>) => {
+        alert('approve button cliecked');
+    }
+
+    const swapTokenHandler = async (event: MouseEvent<HTMLButtonElement>) => {
+        alert('token swap button clicked');
+        // const accounts = await web3.eth.getAccounts();
+        // setMessage('Waiting on transaction success...');
+        // await lottery.methods.enter().send({
+        // from: accounts[0],
+        // value: web3.utils.toWei(value, 'ether'),
+        // });
+        // setMessage('You have been entered!');
+    }
     return (
         <>
             <Box className='hm_main hedr_slct_none'>
@@ -157,11 +170,9 @@ export default function DexSwap() {
                             <Button className="cnnct_wllt_btn" onClick={connectWalletHandler}>CONNECT WALLET</Button>
                         </Box>
                         <Box style={{ display: 'block' }} className='approve_btn_bx'>
-                            <Button style={{ float: 'left' }} className="cnnct_wllt_btn" >APPROVE</Button>
-                            <Button style={{ float: 'right' }} className="cnnct_wllt_btn" >SWAP TOKEN</Button>
+                            <Button style={{ float: 'left' }} className="cnnct_wllt_btn" onClick={approveHandler}>APPROVE</Button>
+                            <Button style={{ float: 'right' }} className="cnnct_wllt_btn" onClick={swapTokenHandler} >SWAP TOKEN</Button>
                         </Box>
-                        {/* <Box className='approve_btn_bx'>
-                        </Box> */}
                     </Box>
                 </Box>
             </Box>
