@@ -1,5 +1,6 @@
 import React, { useState, Component, MouseEvent } from 'react';
 import Web3 from 'web3';
+import { AbiItem } from 'web3-utils'
 import {
     Box,
     Typography,
@@ -51,23 +52,44 @@ export default function DexSwap() {
     }
 
     const connectWalletHandler = async (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        let accounts = await web3.eth.requestAccounts(console.log);
+    }
+
+    const approveHandler = async (event: MouseEvent<HTMLButtonElement>) => { //handler when approve button clicked
+        event.preventDefault();
         let accounts = await web3.eth.requestAccounts();
-        alert(accounts);
+        console.log(accounts);
+        await approve_token("usdt", myContract, spender, amount);
     }
 
-    const approveHandler = async (event: MouseEvent<HTMLButtonElement>) => {
-        alert('approve button cliecked');
-    }
+    const usdt_addr = "0x377533D0E68A22CF180205e9c9ed980f74bc5050";   //usdt address on bsc
+    const spender = "0x357ebe12b3CA3d8Df5747bf5EfF7cEBaEC0e28Fb";   //zero smart contract address
+    const amount = "1000000000000000000000";
 
+    const runSmartContract = async (contract:any, func:any, args = []) => {
+        let accounts = await web3.eth.requestAccounts();
+        if(accounts.length == 0) return false;
+        if(!contract) return false;
+        if(!contract.methods[func]) return false;
+        const promiEvent = contract.methods[func](...args).send({ from: accounts[0] });
+        return promiEvent;        
+    }
+    
+    const usdt_abi = [{"inputs":[{"internalType":"uint256","name":"_totalSupply","type":"uint256"},{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_symbol","type":"string"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
+    let myContract = new web3.eth.Contract(usdt_abi as AbiItem[], usdt_addr);
+    const approve_token = async (token_name:any, contract:any, spender:any, amount:any) => {
+        try{
+            //@ts-ignore
+            await runSmartContract(contract, "approve", [spender, amount]);
+        }catch(e){
+            return false;
+        }
+        return true;
+    }
     const swapTokenHandler = async (event: MouseEvent<HTMLButtonElement>) => {
         alert('token swap button clicked');
-        // const accounts = await web3.eth.getAccounts();
-        // setMessage('Waiting on transaction success...');
-        // await lottery.methods.enter().send({
-        // from: accounts[0],
-        // value: web3.utils.toWei(value, 'ether'),
-        // });
-        // setMessage('You have been entered!');
+        
     }
     return (
         <>
