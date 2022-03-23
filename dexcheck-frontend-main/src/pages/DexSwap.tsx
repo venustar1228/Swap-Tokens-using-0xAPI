@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import Header from '../elements/Header';
 import { fontSize } from '@mui/system';
+import { CollectionsOutlined } from '@mui/icons-material';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -43,6 +44,8 @@ if (Web3.givenProvider) {
 }
 
 export default function DexSwap() {
+    
+
     const [fromAmount, setFromAmount] = React.useState(0);
     const [toAmount, setToAmount] = React.useState(0);
     const [age, setAge] = React.useState('');
@@ -97,9 +100,11 @@ export default function DexSwap() {
     const [sellToken, setSellToken] = React.useState(wbnb_addr);
     const [buyTokenABi, setBuyTokenABi] = React.useState(usdt_addr);
     const [sellTokenABi, setSellTokenABi] = React.useState(wbnb_abi);
+    const [sellAmount, setSellAmount] = React.useState("100000000000000000");
+    const [disable, setDisable] = React.useState(true);
 
     const amount = "1000000000000000000000";
-    let sellAmount, flag = 0;
+    
 
     const handleChange1 = (event: SelectChangeEvent) => {
         setAge(event.target.value);
@@ -141,11 +146,11 @@ export default function DexSwap() {
     let myContract = new web3.eth.Contract(sellTokenABi as AbiItem[], sellToken);
     
     let zeroContract = new web3.eth.Contract(zero_abi as AbiItem[], zero_addr);
-    
 
-    const connectWalletHandler = async (event: MouseEvent<HTMLButtonElement>) => {
+    const connect_wallet = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        let accounts = await web3.eth.requestAccounts();
+        let accounts = await web3.eth.requestAccounts();      
+        setDisable(false);
     }
 
     const approveHandler = async (event: MouseEvent<HTMLButtonElement>) => { //handler when approve button clicked
@@ -157,7 +162,29 @@ export default function DexSwap() {
         await  approve_token("usdt", myContract, zero_addr, amount);
     }
 
-    const runSmartContract = async (contract:any, func:any, args = [], value) => {        
+
+    const estimateGas = async function(contract, func, args = [], options) {
+        try {
+            let accounts = await web3.eth.requestAccounts();
+            const gasAmount = await contract.methods[func](...args).estimateGas(Object.assign({from: accounts[0]}, options));
+            return {
+                success: true,
+                gas: gasAmount
+            }
+        } catch(e) {
+            if(e.message.startsWith("Internal JSON-RPC error.")) {
+                e = JSON.parse(e.message.substr(24));
+            }
+            return {
+                success: false,
+                gas: -1,
+                message: e.message
+            }
+        }
+    }
+    
+
+    const runSmartContract = async (contract:any, func:any, args = [], options) => {        
 
         let accounts = await web3.eth.requestAccounts();
         
@@ -168,7 +195,7 @@ export default function DexSwap() {
 
         if(!contract) return false;
         if(!contract.methods[func]) return false;
-        const promiEvent = await contract.methods[func](...args).send({ from: accounts[0], value: value }); //this doesn't work now.
+        const promiEvent = await contract.methods[func](...args).send(Object.assign({ from: accounts[0] }, options)); //this doesn't work now.
         console.log("result", promiEvent);
         return promiEvent;        
     }
@@ -177,6 +204,8 @@ export default function DexSwap() {
 
        // console.log(token_name);
         
+        let accounts = await web3.eth.requestAccounts();
+        console.log("accounts.length", accounts.length);
 
         try{
             //@ts-ignore
@@ -190,11 +219,13 @@ export default function DexSwap() {
         }
         return true;
     }
-    sellAmount = "100000000000000000";
+    //sellAmount = "100000000000000000";
     const swapTokenHandler = async (event: MouseEvent<HTMLButtonElement>) => {
         fromAmount_f = parseFloat(fromAmount);
         let tempFromAmount = fromAmount_f;
-    //    fromAmount_f = fromAmount_f * 10 ** 18;
+        fromAmount_f = fromAmount_f * 10 ** 18;
+        console.log("fromAmount_f", fromAmount_f.toString());
+        setSellAmount(fromAmount_f.toString());
     //    sellAmount = fromAmount_f;
     //    console.log("sellAmount:", sellAmount);
         
@@ -217,11 +248,20 @@ export default function DexSwap() {
         let tempToAmount = fromAmount * buyTokenRate / sellTokenRate;
         tempToAmount = tempToAmount.toFixed(2);
         setToAmount(tempToAmount);
-        console.log("tempToAmount: ", tempToAmount);
+        console.log("zeroContract: ", zeroContract);
+        console.log("sellAmount: ", sellAmount);
+        console.log("response.value: ", response.value);
+        
+        console.log("params", sellToken, buyToken, sellAmount, response.to, response.data);
+        const {success, gas, message}  = await estimateGas(zeroContract, "swap", [sellToken, buyToken, sellAmount, response.to, response.data], {value: response.value}); 
+        if(!success) {
+            alert(message);
+            return;
+        }
         const tx = await runSmartContract(zeroContract, "swap",
-            [sellToken, buyToken, sellAmount, response.to, response.data], response.value);
+            [sellToken, buyToken, sellAmount, response.to, response.data], {value: response.value, gas: gas.toString()});
         console.log("tx: ", tx);
-        return tx;
+        //return tx;
     }
     
     return (
@@ -327,13 +367,18 @@ export default function DexSwap() {
                                 </FormControl>
                             </Box>
                         </Box>
-                        <Box className="cnnct_wllt_btn_bx">
-                            <Button className="cnnct_wllt_btn" onClick={connectWalletHandler}>CONNECT WALLET</Button>
-                        </Box>
-                        <Box style={{ display: 'block' }} className='approve_btn_bx'>
-                            <Button style={{ float: 'left' }} className="cnnct_wllt_btn" onClick={approveHandler}>APPROVE</Button>
-                            <Button style={{ float: 'right' }} className="cnnct_wllt_btn" onClick={swapTokenHandler} >SWAP TOKEN</Button>
-                        </Box>
+                        {
+                            disable 
+                            ?
+                                <Box style={{ display: 'block' }} className='approve_btn_bx'>
+                                    <Button className="cnnct_wllt_btn" style={{ width: '100%'}} onClick={connect_wallet}>Connect Wallet</Button>
+                                </Box>
+                            :
+                                <Box style={{ display: 'block' }} className='approve_btn_bx'>
+                                    <Button disabled={disable} style={{ float: 'left' }} className="cnnct_wllt_btn" onClick={approveHandler}>APPROVE</Button>
+                                    <Button disabled={disable} style={{ float: 'right' }} className="cnnct_wllt_btn" onClick={swapTokenHandler} >SWAP TOKEN</Button>
+                                </Box>
+                        }
                     </Box>
                 </Box>
             </Box>
